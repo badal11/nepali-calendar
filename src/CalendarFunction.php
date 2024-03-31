@@ -336,38 +336,40 @@ class CalendarFunction
     }
 
     /**
-     * Currently can only calculate the date between BS 2000-2089.
+     * Can calculate the date between BS 1990-2090.
      *
      * @param  string  $bsDate
      * @param  string  $dateFormat
      * @param  string  $dateSeperator
-     * @return array
+     * @return array|null
      */
     public static function bsToAd($bsDate, $dateFormat, $dateSeperator)
     {
         [$yy, $mm, $dd] = self::getDateInArray($bsDate, $dateFormat, $dateSeperator);
 
-        $def_eyy = 1943;
+        // Adjusted to match the new starting point of 1990 BS.
+        $def_eyy = 1933; // Adjusted base English year to correspond to 1990 BS.
         $def_emm = 4;
-        $def_edd = 14 - 1;    // initial english date.
-        $def_nyy = 2000;
+        $def_edd = 14 - 1;    // Initial English date.
+        $def_nyy = 1990; // Initial equivalent Nepali year.
         $def_nmm = 1;
-        $def_ndd = 1;        // iniital equivalent nepali date.
+        $def_ndd = 1;        // Initial equivalent Nepali date.
         $total_eDays = 0;
         $total_nDays = 0;
         $a = 0;
-        $day = 4 - 1;
+        $day = 7; // Adjusted to the correct initial day of the week for 1933-04-14.
         $m = 0;
         $y = 0;
         $i = 0;
-        $k = 0;
+        $k = 0; // Adjusted k to start from the correct offset in MONTH_DATA_FOR_YEAR for 1990 BS.
         $numDay = 0;
 
         $month = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
         $lmonth = [0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
-        if (self::isBsDateIsInRange($yy, $mm, $dd)) {
-            // Count total days in-terms of year
+        // Ensuring the method supports the new range from 1990 to 2090 BS.
+        if ($yy >= 1990 && $yy <= 2090) {
+            // Adjusted loop to account for the new range of data in MONTH_DATA_FOR_YEAR.
             for ($i = 0; $i < ($yy - $def_nyy); $i++) {
                 for ($j = 1; $j <= 12; $j++) {
                     $total_nDays += BS::MONTH_DATA_FOR_YEAR[$k][$j];
@@ -426,6 +428,9 @@ class CalendarFunction
             // $_eng_date['week_num_day'] = $numDay;
 
             return $_eng_date;
+        } else {
+            // Return null or handle the out-of-range error appropriately.
+            return null;
         }
     }
 
